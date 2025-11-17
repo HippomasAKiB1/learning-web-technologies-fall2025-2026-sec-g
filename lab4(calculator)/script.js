@@ -53,6 +53,7 @@ nums.forEach(n => {
 let firstNumber = null;
 let operator = null;
 
+
 const plusBtn = document.createElement("button");
 plusBtn.textContent = "+";
 plusBtn.style.width = "45px";
@@ -60,6 +61,15 @@ plusBtn.style.height = "45px";
 plusBtn.style.margin = "3px";
 plusBtn.disabled = true;
 calc.appendChild(plusBtn);
+
+
+const minusBtn = document.createElement("button");
+minusBtn.textContent = "-";
+minusBtn.style.width = "45px";
+minusBtn.style.height = "45px";
+minusBtn.style.margin = "3px";
+minusBtn.disabled = true;
+calc.appendChild(minusBtn);
 
 
 const equalBtn = document.createElement("button");
@@ -80,6 +90,7 @@ powerBtn.addEventListener("click", () => {
 
         numButtons.forEach(b => b.disabled = false);
         plusBtn.disabled = false;
+        minusBtn.disabled = false;
         equalBtn.disabled = false;
 
     } else {
@@ -89,6 +100,7 @@ powerBtn.addEventListener("click", () => {
 
         numButtons.forEach(b => b.disabled = true);
         plusBtn.disabled = true;
+        minusBtn.disabled = true;
         equalBtn.disabled = true;
 
         firstNumber = null;
@@ -98,8 +110,7 @@ powerBtn.addEventListener("click", () => {
 
 
 plusBtn.addEventListener("click", () => {
-    if (!powerOn) return;
-    if (display.value === "") return;
+    if (!powerOn || display.value === "") return;
 
     firstNumber = Number(display.value);
     operator = "+";
@@ -107,12 +118,26 @@ plusBtn.addEventListener("click", () => {
 });
 
 
+minusBtn.addEventListener("click", () => {
+    if (!powerOn || display.value === "") return;
+
+    firstNumber = Number(display.value);
+    operator = "-";
+    display.value = "";
+});
+
+
 equalBtn.addEventListener("click", () => {
-    if (!powerOn) return;
-    if (operator === "+" && display.value !== "") {
-        const secondNumber = Number(display.value);
-        const result = firstNumber + secondNumber;
-        display.value = result;
-        operator = null;
+    if (!powerOn || display.value === "") return;
+
+    const secondNumber = Number(display.value);
+
+    if (operator === "+") {
+        display.value = firstNumber + secondNumber;
     }
+    else if (operator === "-") {
+        display.value = firstNumber - secondNumber;
+    }
+
+    operator = null;
 });
