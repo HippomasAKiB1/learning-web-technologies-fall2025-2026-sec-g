@@ -88,6 +88,15 @@ multiplyBtn.disabled = true;
 calc.appendChild(multiplyBtn);
 
 
+const clearBtn = document.createElement("button");
+clearBtn.textContent = "C";
+clearBtn.style.width = "45px";
+clearBtn.style.height = "45px";
+clearBtn.style.margin = "3px";
+clearBtn.disabled = true;
+calc.appendChild(clearBtn);
+
+
 const equalBtn = document.createElement("button");
 equalBtn.textContent = "=";
 equalBtn.style.width = "100%";
@@ -108,7 +117,8 @@ powerBtn.addEventListener("click", () => {
         plusBtn.disabled = false;
         minusBtn.disabled = false;
         divideBtn.disabled = false;
-        multiplyBtn.disabled = false; // NEW
+        multiplyBtn.disabled = false;
+        clearBtn.disabled = false;
         equalBtn.disabled = false;
 
     } else {
@@ -120,7 +130,8 @@ powerBtn.addEventListener("click", () => {
         plusBtn.disabled = true;
         minusBtn.disabled = true;
         divideBtn.disabled = true;
-        multiplyBtn.disabled = true; // NEW
+        multiplyBtn.disabled = true;
+        clearBtn.disabled = true;
         equalBtn.disabled = true;
 
         firstNumber = null;
@@ -136,7 +147,6 @@ plusBtn.addEventListener("click", () => {
     display.value = "";
 });
 
-
 minusBtn.addEventListener("click", () => {
     if (!powerOn || display.value === "") return;
     firstNumber = Number(display.value);
@@ -144,14 +154,12 @@ minusBtn.addEventListener("click", () => {
     display.value = "";
 });
 
-
 divideBtn.addEventListener("click", () => {
     if (!powerOn || display.value === "") return;
     firstNumber = Number(display.value);
     operator = "/";
     display.value = "";
 });
-
 
 multiplyBtn.addEventListener("click", () => {
     if (!powerOn || display.value === "") return;
@@ -161,23 +169,21 @@ multiplyBtn.addEventListener("click", () => {
 });
 
 
+clearBtn.addEventListener("click", () => {
+    if (!powerOn) return;
+    display.value = "";
+});
+
+
 equalBtn.addEventListener("click", () => {
     if (!powerOn || display.value === "") return;
 
     const secondNumber = Number(display.value);
 
-    if (operator === "+") {
-        display.value = firstNumber + secondNumber;
-    }
-    else if (operator === "-") {
-        display.value = firstNumber - secondNumber;
-    }
-    else if (operator === "/") {
-        display.value = (secondNumber === 0) ? "Err" : firstNumber / secondNumber;
-    }
-    else if (operator === "*") {
-        display.value = firstNumber * secondNumber;
-    }
+    if (operator === "+") display.value = firstNumber + secondNumber;
+    else if (operator === "-") display.value = firstNumber - secondNumber;
+    else if (operator === "*") display.value = firstNumber * secondNumber;
+    else if (operator === "/") display.value = (secondNumber === 0) ? "Err" : firstNumber / secondNumber;
 
     operator = null;
 });
