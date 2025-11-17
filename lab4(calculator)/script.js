@@ -79,6 +79,15 @@ divideBtn.disabled = true;
 calc.appendChild(divideBtn);
 
 
+const multiplyBtn = document.createElement("button");
+multiplyBtn.textContent = "*";
+multiplyBtn.style.width = "45px";
+multiplyBtn.style.height = "45px";
+multiplyBtn.style.margin = "3px";
+multiplyBtn.disabled = true;
+calc.appendChild(multiplyBtn);
+
+
 const equalBtn = document.createElement("button");
 equalBtn.textContent = "=";
 equalBtn.style.width = "100%";
@@ -99,6 +108,7 @@ powerBtn.addEventListener("click", () => {
         plusBtn.disabled = false;
         minusBtn.disabled = false;
         divideBtn.disabled = false;
+        multiplyBtn.disabled = false; // NEW
         equalBtn.disabled = false;
 
     } else {
@@ -110,6 +120,7 @@ powerBtn.addEventListener("click", () => {
         plusBtn.disabled = true;
         minusBtn.disabled = true;
         divideBtn.disabled = true;
+        multiplyBtn.disabled = true; // NEW
         equalBtn.disabled = true;
 
         firstNumber = null;
@@ -142,6 +153,14 @@ divideBtn.addEventListener("click", () => {
 });
 
 
+multiplyBtn.addEventListener("click", () => {
+    if (!powerOn || display.value === "") return;
+    firstNumber = Number(display.value);
+    operator = "*";
+    display.value = "";
+});
+
+
 equalBtn.addEventListener("click", () => {
     if (!powerOn || display.value === "") return;
 
@@ -154,11 +173,10 @@ equalBtn.addEventListener("click", () => {
         display.value = firstNumber - secondNumber;
     }
     else if (operator === "/") {
-        if (secondNumber === 0) {
-            display.value = "Err";
-        } else {
-            display.value = firstNumber / secondNumber;
-        }
+        display.value = (secondNumber === 0) ? "Err" : firstNumber / secondNumber;
+    }
+    else if (operator === "*") {
+        display.value = firstNumber * secondNumber;
     }
 
     operator = null;
