@@ -7,6 +7,15 @@ calc.style.padding = "10px";
 calc.style.border = "1px solid #000";
 app.appendChild(calc);
 
+let powerOn = false; 
+
+const powerBtn = document.createElement("button");
+powerBtn.textContent = "OFF";
+powerBtn.style.width = "100%";
+powerBtn.style.height = "40px";
+powerBtn.style.margin = "5px 0";
+calc.appendChild(powerBtn);
+
 
 const display = document.createElement("input");
 display.disabled = true;
@@ -18,6 +27,7 @@ calc.appendChild(display);
 
 
 const nums = ["7","8","9","4","5","6","1","2","3","0"];
+const numButtons = [];
 
 nums.forEach(n => {
     const btn = document.createElement("button");
@@ -25,7 +35,33 @@ nums.forEach(n => {
     btn.style.width = "45px";
     btn.style.height = "45px";
     btn.style.margin = "3px";
+
+    btn.disabled = true;
+
+    btn.addEventListener("click", () => {
+        if (powerOn) {
+            display.value += n;
+        }
+    });
+
+    numButtons.push(btn);
     calc.appendChild(btn);
+
+});
+
+powerBtn.addEventListener("click", () => {
+    powerOn = !powerOn;
+
+    if (powerOn) {
+        powerBtn.textContent = "ON";
+        display.disabled = false;
+        numButtons.forEach(b => b.disabled = false);
+    } else {
+        powerBtn.textContent = "OFF";
+        display.disabled = true;
+        display.value = "";
+        numButtons.forEach(b => b.disabled = true);
+    }
 });
 
 
