@@ -40,9 +40,7 @@ nums.forEach(n => {
     btn.disabled = true;
 
     btn.addEventListener("click", () => {
-        if (powerOn) {
-            display.value += n;
-        }
+        if (powerOn) display.value += n;
     });
 
     numButtons.push(btn);
@@ -72,6 +70,15 @@ minusBtn.disabled = true;
 calc.appendChild(minusBtn);
 
 
+const divideBtn = document.createElement("button");
+divideBtn.textContent = "/";
+divideBtn.style.width = "45px";
+divideBtn.style.height = "45px";
+divideBtn.style.margin = "3px";
+divideBtn.disabled = true;
+calc.appendChild(divideBtn);
+
+
 const equalBtn = document.createElement("button");
 equalBtn.textContent = "=";
 equalBtn.style.width = "100%";
@@ -91,6 +98,7 @@ powerBtn.addEventListener("click", () => {
         numButtons.forEach(b => b.disabled = false);
         plusBtn.disabled = false;
         minusBtn.disabled = false;
+        divideBtn.disabled = false;
         equalBtn.disabled = false;
 
     } else {
@@ -101,6 +109,7 @@ powerBtn.addEventListener("click", () => {
         numButtons.forEach(b => b.disabled = true);
         plusBtn.disabled = true;
         minusBtn.disabled = true;
+        divideBtn.disabled = true;
         equalBtn.disabled = true;
 
         firstNumber = null;
@@ -111,7 +120,6 @@ powerBtn.addEventListener("click", () => {
 
 plusBtn.addEventListener("click", () => {
     if (!powerOn || display.value === "") return;
-
     firstNumber = Number(display.value);
     operator = "+";
     display.value = "";
@@ -120,9 +128,16 @@ plusBtn.addEventListener("click", () => {
 
 minusBtn.addEventListener("click", () => {
     if (!powerOn || display.value === "") return;
-
     firstNumber = Number(display.value);
     operator = "-";
+    display.value = "";
+});
+
+
+divideBtn.addEventListener("click", () => {
+    if (!powerOn || display.value === "") return;
+    firstNumber = Number(display.value);
+    operator = "/";
     display.value = "";
 });
 
@@ -137,6 +152,13 @@ equalBtn.addEventListener("click", () => {
     }
     else if (operator === "-") {
         display.value = firstNumber - secondNumber;
+    }
+    else if (operator === "/") {
+        if (secondNumber === 0) {
+            display.value = "Err";
+        } else {
+            display.value = firstNumber / secondNumber;
+        }
     }
 
     operator = null;
