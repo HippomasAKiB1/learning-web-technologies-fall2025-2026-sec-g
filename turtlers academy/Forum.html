@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Discussion Forum</title>
+    <link rel="stylesheet" href="Stylesheet.css">
+    <style>
+        .forum-section {
+            width: 70%;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .forum-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .new-thread-btn, .submit-btn {
+            padding: 12px 24px;
+            background: #000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .new-thread-btn:hover, .submit-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+
+        .thread-item {
+            background: #fafafa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .thread-item:hover {
+            background: #f0f0f0;
+            border-color: #000;
+            transform: translateX(5px);
+        }
+
+        .thread-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .thread-meta {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 500px;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .modal-content textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        .reply-box {
+            background: #fafafa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid #000;
+        }
+
+        .reply-author {
+            font-weight: bold;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+
+<section class="forum-section" id="forumList">
+    <div class="forum-header">
+        <h2>Discussion</h2>
+        <button class="new-thread-btn" id="newThreadBtn">New Thread</button>
+    </div>
+    <div id="threadList"></div>
+</section>
+
+<section class="forum-section" id="threadDetail" style="display:none;">
+    <button class="back-btn" id="backBtn">← Back</button>
+    <div id="threadDetailContent"></div>
+
+    <h3 style="margin-top:30px;">Post a Reply</h3>
+    <textarea id="replyInput" placeholder="Write your reply..."></textarea>
+    <button class="submit-btn" id="postReplyBtn">Post Reply</button>
+
+    <div id="replyList"></div>
+</section>
+
+<div class="modal" id="newThreadModal">
+    <div class="modal-content">
+        <h3>Create New Thread</h3>
+        <input type="text" id="threadTitle" placeholder="Thread title">
+        <textarea id="threadBody" placeholder="What's on your mind?"></textarea>
+        <button class="submit-btn" id="submitThreadBtn">Post Thread</button>
+        <button class="back-btn" id="cancelThreadBtn">Cancel</button>
+    </div>
+</div>
+
+<script>
+    let threads = JSON.parse(localStorage.getItem("forumThreads")) || [];
+    let currentThreadId = null;
+    let currentUser = localStorage.getItem("currentUser") || 
+        "Student_" + Math.floor(Math.random() * 1000);
+
+    localStorage.setItem("currentUser", currentUser);
+
+    function formatDate(date) {
+        let diff = Date.now() - new Date(date);
+        let min = Math.floor(diff / 60000);
+        let hr = Math.floor(diff / 3600000);
+        let day = Math.floor(diff / 86400000);
+
+        if (min < 60) return min + "m ago";
+        if (hr < 24) return hr + "h ago";
+        if (day < 7) return day + "d ago";
+        return new Date(date).toLocaleDateString();
+    }
+
+    function renderThreads() {
+        let list = document.getElementById("threadList");
+        if (!threads.length) {
+            list.innerHTML = "<p style='text-align:center;color:#999;'>No threads yet</p>";
+            return;
+        }
+
+        list.innerHTML = threads.map(t => `
+            <div class="thread-item" data-id="${t.id}">
+                <div class="thread-title">${t.title}</div>
+                <div class="thread-meta">
+                    By ${t.author} • ${t.replies.length} replies • ${formatDate(t.date)}
+                </div>
+            </div>
+        `).join("");
+
+        document.querySelectorAll(".thread-item").forEach(item => {
+            item.onclick = () => openThread(+item.dataset.id);
+        });
+    }
+
+    function openThread(id) {
+        currentThreadId = id;
+        let t = threads.find(x => x.id === id);
+
+        document.getElementById("forumList").style.display = "none";
+        document.getElementById("threadDetail").style.display = "block";
+
+        document.getElementById("threadDetailContent").innerHTML = `
+            <h2>${t.title}</h2>
+            <div class="thread-meta">By ${t.author} • ${formatDate(t.date)}</div>
+            <p>${t.content}</p>
+        `;
+
+        renderReplies(t.replies);
+    }
+
+    function renderReplies(replies) {
+        document.getElementById("replyList").innerHTML =
+            `<h3>Replies (${replies.length})</h3>` +
+            replies.map(r => `
+                <div class="reply-box">
+                    <div class="reply-author">${r.author}</div>
+                    <small>${formatDate(r.date)}</small>
+                    <div>${r.content}</div>
+                </div>
+            `).join("");
+    }
+
+    document.getElementById("submitThreadBtn").onclick = () => {
+        let title = threadTitle.value.trim();
+        let body = threadBody.value.trim();
+        if (!title || !body) return alert("Fill all fields");
+
+        threads.unshift({
+            id: Date.now(),
+            title,
+            content: body,
+            author: currentUser,
+            date: new Date(),
+            replies: []
+        });
+
+        localStorage.setItem("forumThreads", JSON.stringify(threads));
+        threadTitle.value = threadBody.value = "";
+        newThreadModal.classList.remove("active");
+        renderThreads();
+    };
+
+    document.getElementById("postReplyBtn").onclick = () => {
+        let txt = replyInput.value.trim();
+        if (!txt) return;
+
+        let t = threads.find(x => x.id === currentThreadId);
+        t.replies.push({ content: txt, author: currentUser, date: new Date() });
+        localStorage.setItem("forumThreads", JSON.stringify(threads));
+        replyInput.value = "";
+        renderReplies(t.replies);
+    };
+
+    newThreadBtn.onclick = () => newThreadModal.classList.add("active");
+    cancelThreadBtn.onclick = () => newThreadModal.classList.remove("active");
+
+    backBtn.onclick = () => {
+        forumList.style.display = "block";
+        threadDetail.style.display = "none";
+        renderThreads();
+    };
+
+    renderThreads();
+</script>
+
+</body>
+</html>

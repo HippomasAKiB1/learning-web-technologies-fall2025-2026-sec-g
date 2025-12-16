@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Leaderboard</title>
+    <link rel="stylesheet" href="Stylesheet.css">
+    <style>
+        .leaderboard-section {
+            width: 70%;
+            margin: 40px auto;
+        }
+
+        .leaderboard-header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .leaderboard-header h1 {
+            color: #000;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 2px solid #e0e0e0;
+        }
+
+        .leaderboard-table thead {
+            background: #000;
+            color: white;
+        }
+
+        .leaderboard-table th,
+        .leaderboard-table td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .leaderboard-table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .leaderboard-table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .rank-1 {
+            background: #000;
+            color: white;
+            border: 3px solid #FFD700;
+        }
+
+        .rank-2 {
+            background: #333;
+            color: white;
+            border: 3px solid #C0C0C0;
+        }
+
+        .rank-3 {
+            background: #666;
+            color: white;
+            border: 3px solid #CD7F32;
+        }
+
+        .rank-other {
+            background: #f0f0f0;
+            color: #000;
+            border: 2px solid #e0e0e0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .empty-state p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .action-section {
+            text-align: center;
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <section class="leaderboard-section">
+        <div class="leaderboard-header">
+            <h1>Leaderboard</h1>
+            <p style="color: #666; margin-top: 10px;">Top performers based on quiz scores</p>
+        </div>
+
+        <div id="leaderboardContent"></div>
+
+        <div class="action-section">
+            <a href="Quiz.html" class="submit-btn" style="text-decoration: none; display: inline-block;">
+                Take Quiz
+            </a>
+        </div>
+    </section>
+
+    <script>
+        function getTopScores(limit = 10) {
+            let scores = JSON.parse(localStorage.getItem('quizScores')) || [];
+            
+            let userBestScores = {};
+            scores.forEach(score => {
+                if (!userBestScores[score.name] || score.percentage > userBestScores[score.name].percentage) {
+                    userBestScores[score.name] = score;
+                }
+            });
+
+            let sortedScores = Object.values(userBestScores)
+                .sort((a, b) => b.percentage - a.percentage)
+                .slice(0, limit);
+
+            return sortedScores;
+        }
+
+        function getRankClass(rank) {
+            if (rank === 1) return 'rank-1';
+            if (rank === 2) return 'rank-2';
+            if (rank === 3) return 'rank-3';
+            return 'rank-other';
+        }
+
+        function getPercentageColor(percentage) {
+            if (percentage >= 80) return '#000';
+            if (percentage >= 60) return '#666';
+            return '#999';
+        }
+
+        function formatDate(dateString) {
+            let date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+
+        function displayLeaderboard() {
+            let topScores = getTopScores(10);
+            let content = document.getElementById('leaderboardContent');
+
+            if (topScores.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <p>No scores yet. Take a quiz to get on the leaderboard!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Student</th>
+                            <th>Score</th>
+                            <th>Percentage</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            topScores.forEach((score, index) => {
+                let rank = index + 1;
+                let rankClass = getRankClass(rank);
+                let percentageColor = getPercentageColor(score.percentage);
+
+                html += `
+                    <tr>
+                        <td>
+                            <span class="rank-badge ${rankClass}">${rank}</span>
+                        </td>
+                        <td><strong>${score.name}</strong></td>
+                        <td>${score.score}/${score.total}</td>
+                        <td>
+                            <strong style="color: ${percentageColor}; font-weight: 700;">
+                                ${score.percentage}%
+                            </strong>
+                        </td>
+                        <td>${formatDate(score.date)}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            content.innerHTML = html;
+        }
+
+        displayLeaderboard();
+    </script>
+</body>
+</html>

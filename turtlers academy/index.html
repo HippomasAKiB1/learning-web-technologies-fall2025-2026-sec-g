@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Turtler's Academy - Home</title>
+    <link rel="stylesheet" href="Stylesheet.css">
+    <style>
+        .nav-container {
+            width: 70%;
+            margin: 60px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            border: 2px solid #e0e0e0;
+        }
+
+        .nav-container h1 {
+            text-align: center;
+            color: #000;
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
+
+        .nav-container > p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: #000;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border: 2px solid #000;
+        }
+
+        .feature-card:hover {
+            background: #333;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .feature-card h3 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .feature-card p {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+
+        .user-info {
+            text-align: center;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .user-info strong {
+            color: #000;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <h1>Turtler's Academy</h1>
+        <p>Enhance your learning experience with interactive features</p>
+
+        <div class="user-info">
+            <p>Logged in as: <strong id="userName"></strong></p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card" onclick="location.href='Quiz.html'">
+                
+                <h3>Quiz System</h3>
+                <p>Test your knowledge with interactive quizzes. Scores are saved to the leaderboard.</p>
+            </div>
+
+            <div class="feature-card" onclick="location.href='Forum.html'">
+               
+                <h3>Discussion Forum</h3>
+                <p>Ask questions, share ideas, and engage with fellow students.</p>
+            </div>
+
+            <div class="feature-card" onclick="location.href='LessonComment.html'">
+                
+                <h3>Lesson Comments</h3>
+                <p>Leave comments on lessons and interact with course content.</p>
+            </div>
+
+            <div class="feature-card" onclick="location.href='Review.html'">
+               
+                <h3>Reviews & Ratings</h3>
+                <p>Rate courses and share your learning experience with others.</p>
+            </div>
+
+            <div class="feature-card" onclick="location.href='Leaderboard.html'">
+               
+                <h3>Leaderboard</h3>
+                <p>See top performers and track your ranking among peers.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = localStorage.getItem('currentUser');
+        if (!currentUser) {
+            currentUser = 'Student_' + Math.floor(Math.random() * 1000);
+            localStorage.setItem('currentUser', currentUser);
+        }
+        document.getElementById('userName').innerText = currentUser;
+    </script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+/* General Styles - Black & White Theme */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    color: #000;
+}
+
+/* for bookmark page/feature */
+.course-list {
+    width: 60%;
+    margin: 40px auto;
+}
+
+.course-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.course-card:hover {
+    border-color: #000;
+}
+
+.bookmark-btn {
+    background: #000;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.bookmark-btn:hover {
+    background: #333;
+}
+
+#bookmarkList {
+    margin-top: 20px;
+    padding-left: 20px;
+}
+
+body.light-mode {
+    background: #f5f5f5;
+    color: #000;
+}
+
+body.dark-mode {
+    background: #1a1a1a;
+    color: #e5e5e5;
+}
+
+/* for color toggle */
+.theme-section {
+    width: 60%;
+    margin: 40px auto;
+}
+
+.theme-btn {
+    padding: 10px 15px;
+    background: #000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.theme-btn:hover {
+    background: #333;
+}
+
+/* for demo page */
+.demo-header {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.content-section {
+    width: 60%;
+    margin: 40px auto;
+}
+
+.card {
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    background: white;
+    border: 2px solid #e0e0e0;
+}
+
+body.dark-mode .card {
+    background: #2a2a2a;
+    border-color: #444;
+}
+
+/* dashboard */
+.dashboard {
+    width: 70%;
+    margin: 40px auto;
+}
+
+.dashboard h1 {
+    margin-bottom: 25px;
+}
+
+.dashboard-card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 22px;
+    background: #e0e0e0;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #000;
+    color: white;
+    text-align: center;
+    font-size: 14px;
+    line-height: 22px;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.stats div {
+    width: 30%;
+}
+
+/* search bar */
+.search-section {
+    width: 60%;
+    margin: 40px auto;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid #e0e0e0;
+}
+
+#searchInput:focus {
+    outline: none;
+    border-color: #000;
+}
+
+#suggestionList {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+#suggestionList li {
+    padding: 8px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-bottom: 1px solid #ddd;
+}
+
+/* quiz */
+.quiz-section {
+    width: 60%;
+    margin: 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    border: 2px solid #e0e0e0;
+}
+
+.question {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #fafafa;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.question p {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.question label {
+    display: block;
+    margin: 8px 0;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.question label:hover {
+    background: #e8e8e8;
+}
+
+.submit-btn {
+    padding: 12px 24px;
+    background: #000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.submit-btn:hover {
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+#quizResult {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+    background: #fafafa;
+    border: 2px solid #e0e0e0;
+}
+
+/* lesson comments */
+.comment-section {
+    width: 60%;
+    margin: 40px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    border: 2px solid #e0e0e0;
+}
+
+.comment-section h3 {
+    margin-bottom: 15px;
+    color: #000;
+}
+
+#commentInput {
+    width: 100%;
+    height: 80px;
+    padding: 12px;
+    border-radius: 5px;
+    border: 2px solid #e0e0e0;
+    margin-bottom: 12px;
+    resize: none;
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+#commentInput:focus {
+    outline: none;
+    border-color: #000;
+}
+
+.btn-comment {
+    padding: 10px 20px;
+    background: #000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-comment:hover {
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.comment-box {
+    padding: 15px;
+    background: #fafafa;
+    margin-top: 12px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.comment-box:hover {
+    border-color: #000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Utility Classes */
+a {
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+a:hover {
+    text-decoration: underline;
+}

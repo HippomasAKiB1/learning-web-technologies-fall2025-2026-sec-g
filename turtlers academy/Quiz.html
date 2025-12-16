@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz System</title>
+    <link rel="stylesheet" href="Stylesheet.css">
+</head>
+<body>
+    <section class="quiz-section">
+        <h2 style="color: #000;">Web Development Quiz</h2>
+
+        <form id="quizForm">
+            <div class="question">
+                <p>1. HTML stands for?</p>
+                <label>
+                    <input type="radio" name="q1" value="1">
+                    HyperText Markup Language
+                </label><br>
+                <label>
+                    <input type="radio" name="q1" value="0">
+                    HighText Machine Language
+                </label>
+            </div>
+
+            <div class="question">
+                <p>2. CSS is mainly used for?</p>
+                <label>
+                    <input type="radio" name="q2" value="1">
+                    Styling web pages
+                </label><br>
+                <label>
+                    <input type="radio" name="q2" value="0">
+                    Writing server-side logic
+                </label>
+            </div>
+
+            <div class="question">
+                <p>3. What does JS stand for?</p>
+                <label>
+                    <input type="radio" name="q3" value="1">
+                    JavaScript
+                </label><br>
+                <label>
+                    <input type="radio" name="q3" value="0">
+                    JavaStyle
+                </label>
+            </div>
+
+            <div class="question">
+                <p>4. Which tag is used for creating links?</p>
+                <label>
+                    <input type="radio" name="q4" value="1">
+                    &lt;a&gt;
+                </label><br>
+                <label>
+                    <input type="radio" name="q4" value="0">
+                    &lt;link&gt;
+                </label>
+            </div>
+
+            <div class="question">
+                <p>5. CSS stands for?</p>
+                <label>
+                    <input type="radio" name="q5" value="1">
+                    Cascading Style Sheets
+                </label><br>
+                <label>
+                    <input type="radio" name="q5" value="0">
+                    Creative Style System
+                </label>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Quiz</button>
+        </form>
+
+        <p id="quizResult"></p>
+        <div id="leaderboardLink" style="display: none; margin-top: 15px;">
+            <a href="Leaderboard.html" style="color: #000; text-decoration: underline; font-weight: 600;">View Leaderboard</a>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const quizForm = document.getElementById("quizForm");
+            const quizResult = document.getElementById("quizResult");
+            const leaderboardLink = document.getElementById("leaderboardLink");
+
+            if (!quizForm) {
+                console.error("quizForm not found");
+                return;
+            }
+
+            quizForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                let q1 = document.querySelector('input[name="q1"]:checked');
+                let q2 = document.querySelector('input[name="q2"]:checked');
+                let q3 = document.querySelector('input[name="q3"]:checked');
+                let q4 = document.querySelector('input[name="q4"]:checked');
+                let q5 = document.querySelector('input[name="q5"]:checked');
+
+                if (!q1 || !q2 || !q3 || !q4 || !q5) {
+                    quizResult.innerText = "Please answer all questions!";
+                    quizResult.style.color = "#e74c3c";
+                    quizResult.style.fontWeight = "bold";
+                    return;
+                }
+
+                let score = parseInt(q1.value) + parseInt(q2.value) + 
+                           parseInt(q3.value) + parseInt(q4.value) + parseInt(q5.value);
+                
+                let percentage = (score / 5) * 100;
+
+                
+                let scores = JSON.parse(localStorage.getItem('quizScores')) || [];
+                let userName = localStorage.getItem('currentUser') || 'Student_' + Math.floor(Math.random() * 1000);
+                localStorage.setItem('currentUser', userName);
+
+                scores.push({
+                    name: userName,
+                    score: score,
+                    total: 5,
+                    percentage: percentage,
+                    date: new Date().toISOString()
+                });
+
+                localStorage.setItem('quizScores', JSON.stringify(scores));
+
+                quizResult.style.color = "#000";
+                quizResult.style.fontWeight = "bold";
+                quizResult.innerText = "Your Score: " + score + "/5 (" + percentage + "%)";
+                
+                leaderboardLink.style.display = "block";
+            });
+        });
+    </script>
+</body>
+</html>

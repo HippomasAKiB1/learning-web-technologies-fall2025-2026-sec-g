@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Reviews</title>
+    <link rel="stylesheet" href="Stylesheet.css">
+    <style>
+        .review-section {
+            width: 70%;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .review-section h2 {
+            color: #000;
+        }
+
+        .rating-summary {
+            text-align: center;
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .avg-rating {
+            font-size: 48px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .star-display {
+            font-size: 28px;
+            color: #000;
+            margin: 10px 0;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 10px;
+            font-size: 32px;
+            margin: 15px 0;
+            justify-content: center;
+        }
+
+        .star {
+            cursor: pointer;
+            color: #ddd;
+            transition: color 0.2s;
+        }
+
+        .star.filled {
+            color: #000;
+        }
+
+        .star:hover {
+            color: #333;
+        }
+
+        .review-form {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .review-item {
+            background: #fafafa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .review-item:hover {
+            border-color: #000;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .review-stars {
+            color: #000;
+            font-size: 18px;
+        }
+
+        #reviewText {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            height: 100px;
+            resize: none;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        #reviewText:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+        .alert {
+            padding: 15px;
+            background: #fafafa;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            color: #000;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <section class="review-section">
+        <h2>Course Reviews & Ratings</h2>
+        <p style="color: #666; margin-bottom: 20px;">Web Development Masterclass</p>
+
+        <div class="rating-summary">
+            <div class="avg-rating" id="avgRating">0.0</div>
+            <div class="star-display" id="starDisplay">☆☆☆☆☆</div>
+            <div style="color: #666; font-weight: 600;"><span id="reviewCount">0</span> reviews</div>
+        </div>
+
+        <div id="reviewFormContainer"></div>
+
+        <h3 style="color: #000;">All Reviews</h3>
+        <div id="reviewList"></div>
+    </section>
+
+    <script>
+        const courseId = 'course_1';
+        let currentUser = localStorage.getItem('currentUser') || 'Student_' + Math.floor(Math.random() * 1000);
+        localStorage.setItem('currentUser', currentUser);
+        let selectedRating = 0;
+
+        function getReviews() {
+            let reviews = localStorage.getItem('reviews_' + courseId);
+            return reviews ? JSON.parse(reviews) : [];
+        }
+
+        function saveReviews(reviews) {
+            localStorage.setItem('reviews_' + courseId, JSON.stringify(reviews));
+        }
+
+        function hasUserReviewed() {
+            let reviews = getReviews();
+            return reviews.some(r => r.userId === currentUser);
+        }
+
+        function calculateAverage() {
+            let reviews = getReviews();
+            if (reviews.length === 0) return 0;
+            let sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+            return (sum / reviews.length).toFixed(1);
+        }
+
+        function displayStars(rating) {
+            let filled = Math.round(rating);
+            let stars = '';
+            for (let i = 0; i < 5; i++) {
+                stars += i < filled ? '★' : '☆';
+            }
+            return stars;
+        }
+
+        function showReviewForm() {
+            if (hasUserReviewed()) {
+                document.getElementById('reviewFormContainer').innerHTML = `
+                    <div class="alert">
+                        ✓ You have already reviewed this course. Thank you for your feedback!
+                    </div>
+                `;
+                return;
+            }
+
+            document.getElementById('reviewFormContainer').innerHTML = `
+                <div class="review-form">
+                    <h3 style="color: #000;">Write a Review</h3>
+                    <label style="display: block; margin-bottom: 10px; font-weight: bold; color: #000;">Your Rating</label>
+                    <div class="star-rating" id="starRating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <label style="display: block; margin-bottom: 10px; font-weight: bold; color: #000;">Your Review</label>
+                    <textarea id="reviewText" placeholder="Share your experience with this course..."></textarea>
+                    <button class="submit-btn" onclick="submitReview()">Submit Review</button>
+                </div>
+            `;
+
+            attachStarListeners();
+        }
+
+        function attachStarListeners() {
+            let stars = document.querySelectorAll('.star');
+            
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    selectedRating = parseInt(this.getAttribute('data-rating'));
+                    updateStars();
+                });
+
+                star.addEventListener('mouseenter', function() {
+                    let rating = parseInt(this.getAttribute('data-rating'));
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.classList.add('filled');
+                        } else {
+                            s.classList.remove('filled');
+                        }
+                    });
+                });
+            });
+
+            document.getElementById('starRating').addEventListener('mouseleave', function() {
+                updateStars();
+            });
+        }
+
+        function updateStars() {
+            let stars = document.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                if (index < selectedRating) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+        }
+
+        function submitReview() {
+            let reviewText = document.getElementById('reviewText').value.trim();
+
+            if (selectedRating === 0) {
+                alert('Please select a rating');
+                return;
+            }
+
+            if (!reviewText) {
+                alert('Please write a review');
+                return;
+            }
+
+            let reviews = getReviews();
+            
+            let newReview = {
+                id: Date.now(),
+                rating: selectedRating,
+                text: reviewText,
+                author: currentUser,
+                userId: currentUser,
+                date: new Date().toISOString()
+            };
+
+            reviews.unshift(newReview);
+            saveReviews(reviews);
+
+            selectedRating = 0;
+            displayPage();
+        }
+
+        function displayReviews() {
+            let reviews = getReviews();
+            let html = '';
+
+            if (reviews.length === 0) {
+                html = '<p style="text-align: center; color: #999;">No reviews yet. Be the first to review!</p>';
+            } else {
+                reviews.forEach(review => {
+                    html += `
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div>
+                                    <div style="font-weight: bold; color: #000;">👤 ${review.author}</div>
+                                    <div style="font-size: 14px; color: #666; margin-top: 5px;">
+                                        ${formatDate(review.date)}
+                                    </div>
+                                </div>
+                                <div class="review-stars">${displayStars(review.rating)}</div>
+                            </div>
+                            <div style="line-height: 1.6; color: #333;">${review.text}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('reviewList').innerHTML = html;
+        }
+
+        function formatDate(dateString) {
+            let date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        function displayPage() {
+            let avgRating = calculateAverage();
+            let reviews = getReviews();
+
+            document.getElementById('avgRating').innerText = avgRating;
+            document.getElementById('starDisplay').innerText = displayStars(avgRating);
+            document.getElementById('reviewCount').innerText = reviews.length;
+
+            showReviewForm();
+            displayReviews();
+        }
+
+        displayPage();
+    </script>
+</body>
+</html>
