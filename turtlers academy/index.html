@@ -87,6 +87,27 @@
             color: #000;
             font-weight: 700;
         }
+
+        .footer-credit {
+          margin: 40px auto 20px;
+         text-align: center;
+           font-size: 14px;
+          color: #666;
+         padding: 15px;
+         border-top: 2px solid #e0e0e0;
+           width: 70%;
+         font-weight: 500;
+        }
+
+.footer-credit span {
+    color: #000;
+    font-weight: 700;
+}
+
+.footer-credit:hover span {
+    text-decoration: underline;
+}
+
     </style>
 </head>
 <body>
@@ -129,7 +150,14 @@
                 <p>See top performers and track your ranking among peers.</p>
             </div>
         </div>
+
+        
     </div>
+
+    <div class="footer-credit">
+        Made with ❤️ by <span>Akib Hasan Pyil</span>
+    </div>
+
 
     <script>
         let currentUser = localStorage.getItem('currentUser');
